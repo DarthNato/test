@@ -37,6 +37,13 @@ meanApp.controller('mainCtrl', function($scope, $http, misc) {
     $scope.$apply();
   });
 
+  // Populate the applicationa with all companies
+  misc.getAllCompanies(function(response) {
+    $scope.companies = response;
+    $scope.$apply();
+  });
+
+
   // Add new contact to database
   $scope.addContact = function() {
     
@@ -86,6 +93,11 @@ meanApp.factory('misc', function($http) {
   return {
     getAllContacts: function(callback) {
       $.get('/api/contacts').success(function(response) {
+        callback(response);
+      });
+    },
+    getAllCompanies: function(callback) {
+      $.get('/api/companies').success(function(response) {
         callback(response);
       });
     },

@@ -11,8 +11,9 @@ global.__root = __dirname;
 var express    = require('express'),
     bodyParser = require('body-parser'),
     config     = require(__root + '/config'),
-    Contact       = require(__root + '/modules/mongoose').Contact,
-    ObjectId   = require(__root + '/modules/mongoose').ObjectId;
+    //Contact       = require(__root + '/modules/mongoose').Contact,
+    //ObjectId   = require(__root + '/modules/mongoose').ObjectId,
+    mongoose    = require('mongoose');
 
 /*
 -----------------------------------------------------------------------------------
@@ -21,6 +22,11 @@ var express    = require('express'),
 |
 -----------------------------------------------------------------------------------
 */
+
+mongoose.connect("127.0.0.1:27017/driverchecktest");
+var schema = new mongoose.Schema({name:String});
+var Company = mongoose.model('companies',schema);
+
 
 var server = express();
 server.use(express.static(__dirname + '/public'));
@@ -37,6 +43,16 @@ console.log("Listening on port " + config.port);
 -----------------------------------------------------------------------------------
 */
 
+server.get('/api/companies', function(req, res) {
+  console.warn("Im trying to get the companies");
+  Company.find(function(err, companies) {
+    if (err) res.send(err);
+    console.warn(companies);
+    res.json(companies);
+  });
+});
+
+/*
 // Get all contacts
 server.get('/api/contacts', function(req, res) {
   Contact.find(function(err, contacts) {
@@ -44,6 +60,8 @@ server.get('/api/contacts', function(req, res) {
     res.json(contacts);
   });
 });
+
+
 
 // Post new contact
 server.post('/api/contacts', function(req, res) {
@@ -74,7 +92,7 @@ server.delete('/api/contacts/:id', function(req, res) {
   });
 
 })
-
+*/
 /*
 -----------------------------------------------------------------------------------
 |
