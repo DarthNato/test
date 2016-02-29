@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html ng-app="meanApp" lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href='http://fonts.googleapis.com/css?family=Lato:400,900' rel='stylesheet' type='text/css'>
+  <link rel="stylesheet" href="css/styles.css">
+
+    <!-- Latest compiled and minified CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+  <!-- Optional theme -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
+
+  <title>MEAN-CRUD Application</title>
+</head>
+<body ng-controller="mainCtrl">
+
+    <div class= "modal fade hide" id="login">
+      
+      <form class="form-signin">
+        <div class="modal-header">
+        <h2 class="form-signin-heading">Please sign in</h2>
+        </div>
+        <div class="modal-body">
+        <input type="user" name="user" class="form-control" placeholder="User" required autofocus>
+        <input type="password" name="pass" class="form-control" placeholder="Password" required>
+        </div>
+        <div class="modal-footer">
+        <button ng-click="login()" class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+        </div>
+      </form>
+      
+    </div> <!-- /login -->
+
+<div class ="modal fade hide" id="wrongPass">
+        <div class="modal-header">
+        <h2>Wrong Password</h2>
+        </div>
+        <div class="modal-footer">
+        <button ng-click="" class="btn btn-lg btn-primary btn-block">Try Again</button>
+        </div>
+</div>
+
+  <header>
+    <div class="headline">
+      <h1>Never forget.</h1>
+      <p>Save your contacts with a single click.</p>
+    </div>
+  </header>
+
+  <form class="new-contact">
+    <div class="form-group">
+      <input ng-model="newContact.firstname" class="form-control" name="firstname" placeholder="Firstname" autocomplete="off">
+    </div>
+    <div class="form-group">
+      <input ng-model="newContact.lastname" class="form-control" name="lastname" placeholder="Lastname" autocomplete="off">
+    </div>
+    <div class="form-group">
+      <input ng-model="newContact.email" class="form-control" name="email" placeholder="Email" autocomplete="off">
+    </div>
+    <div class="form-group">
+      <div ng-click="addContact()" class="add-contact">Save your contact forever</div>
+    </div>
+  </form>
+
+  <div class="contacts">
+    <div ng-repeat="contact in contacts" class="col">
+      <div class="contact">
+        <div ng-click="deleteContact($index)" class="contact-delete">X</div>
+        <p><strong>{{ contact.lastname }}</strong>, {{ contact.firstname }}</p>
+        <p class="contact-email">{{ contact.email }}</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- JavaScript -->
+  <script src="https://code.jquery.com/jquery-1.12.1.min.js"></script>
+  <script src="https://code.angularjs.org/1.5.0/angular.min.js"></script>
+  <script src="https://code.angularjs.org/1.5.0/angular-resource.min.js"></script>
+  <script src="js/app.js"></script>
+
+</body>
+</html>
