@@ -16,7 +16,7 @@
 </head>
 <body ng-controller="mainCtrl">
 
-    <div class= "modal fade hide" id="login">
+    <div id="login">
       
       <form class="form-signin">
         <div class="modal-header">
@@ -42,7 +42,12 @@
         </div>
 </div>
 
-
+<div id="AddCompanyForm">
+    <form class="navbar-form">
+      <input type="text" ng-model="newCompany.name" class ="form-control" placeholder="Company" name="companyName"></input>
+      <input type="submit" class="btn btn-success" ng-click="addCompany()" value= "Add"></input>
+    </form>
+</div>
 
   <h3>Companies, Employees, Tests</h3>
   <div ng-repeat="company in companies track by $index">

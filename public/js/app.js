@@ -18,12 +18,6 @@ var meanApp = angular.module('meanApp', ['ngResource']);
 
 meanApp.controller('mainCtrl', function($scope, $http, misc) {
 
-  // Contact model
-  $scope.newContact = {
-    firstname: null,
-    lastname: null,
-    email: null
-  };
 
   // user model
   $scope.user = {
@@ -31,15 +25,57 @@ meanApp.controller('mainCtrl', function($scope, $http, misc) {
     pass: null
   };
 
-  // Populate the applicationa with all contacts
-  misc.getAllContacts(function(response) {
-    $scope.contacts = response;
-    $scope.$apply();
-  });
+    // user model
+  $scope.newCompany = {
+    name: null
+  };
+
 
   // Populate the applicationa with all companies
   misc.getAllCompanies(function(response) {
     $scope.companies = response;
+    $scope.$apply();
+  });
+
+  // Add new contact to database
+  $scope.addCompany = function() {
+    
+    var formFields = [];
+    for(key in $scope.newCompany) {
+      formFields.push($scope.newCompany[key]);
+    }   
+
+    if (misc.isValid(formFields)) {
+      $.post('/api/companies', $scope.newCompany);
+      $scope.companies.push($scope.newCompany);
+      $scope.newCompany = {};
+    }
+
+  }
+
+//Not complete
+   $scope.login = function() {
+    var formFields = [];
+    for(key in $scope.user) {
+      formFields.push($scope.user[key]);
+    }  
+    var temp = $.post('/api/login', $scope.user)
+    console.log(temp);
+    $scope.user = {};
+  }
+  //Not complete
+
+/** Delete template main functions.
+  // Contact model
+  $scope.newContact = {
+    firstname: null,
+    lastname: null,
+    email: null
+  };
+
+  // Populate the applicationa with all contacts
+  misc.getAllContacts(function(response) {
+    $scope.contacts = response;
     $scope.$apply();
   });
 
@@ -67,17 +103,7 @@ meanApp.controller('mainCtrl', function($scope, $http, misc) {
     $scope.$apply();
   }
 
-//Not complete
-   $scope.login = function() {
-    var formFields = [];
-    for(key in $scope.user) {
-      formFields.push($scope.user[key]);
-    }  
-    var temp = $.post('/api/login', $scope.user)
-    console.log(temp);
-    $scope.user = {};
-  }
-  //Not complete
+*/
 
 });
 

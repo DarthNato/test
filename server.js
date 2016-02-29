@@ -52,6 +52,18 @@ server.get('/api/companies', function(req, res) {
   });
 });
 
+// Post new Company on the db
+server.post('/api/companies', function(req, res) {
+  var company = new Company({
+    name: req.body.name,
+  });
+
+  company.save(function(err) {
+    if (err) res.send(err);
+    res.send("Success");
+  })
+});
+
 /*
 // Get all contacts
 server.get('/api/contacts', function(req, res) {
