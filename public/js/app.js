@@ -30,10 +30,21 @@ meanApp.controller('mainCtrl', function($scope, $http, misc) {
     name: null
   };
 
+  $scope.newEmployee = {
+    name: null,
+    company: null
+  };
+
 
   // Populate the applicationa with all companies
   misc.getAllCompanies(function(response) {
     $scope.companies = response;
+    //$scope.$apply();
+  });
+
+    // Populate the applicationa with all employees
+  misc.getAllEmployees(function(response) {
+    $scope.employees = response;
     $scope.$apply();
   });
 
@@ -49,6 +60,21 @@ meanApp.controller('mainCtrl', function($scope, $http, misc) {
       $.post('/api/companies', $scope.newCompany);
       $scope.companies.push($scope.newCompany);
       $scope.newCompany = {};
+    }
+
+  }
+
+    $scope.addEmployee = function() {
+    
+    var formFields = [];
+    for(key in $scope.newEmployee) {
+      formFields.push($scope.newEmployee[key]);
+    }   
+
+    if (misc.isValid(formFields)) {
+      $.post('/api/employees', $scope.newEmployee);
+      $scope.employees.push($scope.newEmployee);
+      $scope.newEmployee = {};
     }
 
   }
@@ -124,6 +150,11 @@ meanApp.factory('misc', function($http) {
     },
     getAllCompanies: function(callback) {
       $.get('/api/companies').success(function(response) {
+        callback(response);
+      });
+    },
+    getAllEmployees: function(callback) {
+      $.get('/api/employees').success(function(response) {
         callback(response);
       });
     },

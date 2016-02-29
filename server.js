@@ -26,6 +26,7 @@ var express    = require('express'),
 mongoose.connect("127.0.0.1:27017/driverchecktest");
 var schema = new mongoose.Schema({name:String});
 var Company = mongoose.model('companies',schema);
+var Employee = mongoose.model('employees',schema);
 
 
 var server = express();
@@ -52,6 +53,15 @@ server.get('/api/companies', function(req, res) {
   });
 });
 
+server.get('/api/employees', function(req, res) {
+  console.warn("Im trying to get the employees");
+  Employee.find(function(err, employees) {
+    if (err) res.send(err);
+    console.warn(employees);
+    res.json(employees);
+  });
+});
+
 // Post new Company on the db
 server.post('/api/companies', function(req, res) {
   var company = new Company({
@@ -59,6 +69,19 @@ server.post('/api/companies', function(req, res) {
   });
 
   company.save(function(err) {
+    if (err) res.send(err);
+    res.send("Success");
+  })
+});
+
+// Post new employees on the db
+server.post('/api/employees', function(req, res) {
+  var employee = new Employee({
+    name: req.body.name,
+    company: req.body.company,
+  });
+
+  employee.save(function(err) {
     if (err) res.send(err);
     res.send("Success");
   })

@@ -42,18 +42,38 @@
         </div>
 </div>
 
-<div id="AddCompanyForm">
+<div id="addCompanyForm">
     <form class="navbar-form">
-      <input type="text" ng-model="newCompany.name" class ="form-control" placeholder="Company" name="companyName"></input>
+      <input type="text" ng-model="newCompany.name" class ="form-control" placeholder="Company" name="companyName" required></input>
       <input type="submit" class="btn btn-success" ng-click="addCompany()" value= "Add"></input>
     </form>
 </div>
 
-  <h3>Companies, Employees, Tests</h3>
+</div id="showCompanies">
+  <h3>Companies</h3>
   <div ng-repeat="company in companies track by $index">
-    <span class="glyphicon glyphicon-plus"></span>{{company.name}}<span class="glyphicon glyphicon-remove"></span>
+    <span class="glyphicon glyphicon-minus"></span>{{company.name}}
   </div>
+</div>
 
+
+<div id="addEmployee">
+    <form class="navbar-form">
+      <select ng-model="newEmployee.company" class ="form-control" name="companiesList" required>
+          <option value="" selected disabled>Choose Company</option>
+          <option ng-repeat="company in companies track by $index" value="{{company.name}}">{{company.name}}</option>
+      </select>
+      <input type="text" ng-model="newEmployee.name" class ="form-control" placeholder="Employee Name" name="employeeName" required></input>
+      <input type="submit" class="btn btn-success" ng-click="addEmployee()" value= "Add"></input>
+    </form>
+</div>
+
+</div id="showEmployees">
+  <h3>Employees</h3>
+  <div ng-repeat="employee in employees track by $index">
+    <span class="glyphicon glyphicon-minus"></span>{{employee.name}}, {{employee.company}}
+  </div>
+</div>
 
 <!-- comment out the base page
   <header>
