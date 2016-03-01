@@ -18,28 +18,33 @@ var meanApp = angular.module('meanApp', ['ngResource']);
 
 meanApp.controller('mainCtrl', function($scope, $http, misc) {
 
-
+/*
   // user model
   $scope.user = {
     user: null,
     pass: null
   };
-
-    // user model
+*/
+    // user Company
   $scope.newCompany = {
-    name: null
+    _id: null
   };
 
   $scope.newEmployee = {
-    name: null,
+    _id: null,
     company: null
   };
 
   $scope.newTest = {
+    company: null,
     employee: null,
     name: null,
     date: null,
     pass: false
+  };
+
+  $scope.newTestInCatalog = {
+    _id: null
   };
 
 
@@ -52,11 +57,12 @@ meanApp.controller('mainCtrl', function($scope, $http, misc) {
     // Populate the applicationa with all employees
   misc.getAllEmployees(function(response) {
     $scope.employees = response;
-    $scope.$apply();
+    //$scope.$apply();
   });
 
   misc.getAllTests(function(response) {
     $scope.tests = response;
+    $scope.$apply();
   });
 
   // Add new contact to database
@@ -104,11 +110,12 @@ meanApp.controller('mainCtrl', function($scope, $http, misc) {
       console.log("valid");
       $.post('/api/tests', $scope.newTest);
       $scope.tests.push($scope.newTest);
-      $scope.newTest = {};
+      $scope.newTest = {pass: false};
     }
     console.log("test add out");
 
   }
+
 
 //Not complete
    $scope.login = function() {

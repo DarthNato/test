@@ -24,12 +24,27 @@ var express    = require('express'),
 */
 
 mongoose.connect("127.0.0.1:27017/driverchecktest");
-var CompSchema = new mongoose.Schema({name:String}),
+var CompSchema = new mongoose.Schema({
+      _id:String
+    }),
     Company = mongoose.model('companies',CompSchema),
-    EmpSchema = new mongoose.Schema({name:String, company:String}),
+    EmpSchema = new mongoose.Schema({
+      _id:String,
+      company:String
+    }),
     Employee = mongoose.model('employees',EmpSchema);
-    TestSchema = new mongoose.Schema({employee:String, name:String, date:Date, pass:Boolean}),
-    Test = mongoose.model('tests',TestSchema);
+    TestSchema = new mongoose.Schema({
+      company:String,
+      employee:String,
+      name:String,
+      date:Date,
+      pass:Boolean
+    }),
+    Test = mongoose.model('tests',TestSchema),
+    TestCatalogSchema  = new mongoose.Schema({
+      _id:String
+    }),
+    TestCatalog = mongoose.model('testCatalog',TestCatalogSchema);
 
 
 var server = express();
@@ -77,7 +92,7 @@ server.get('/api/tests', function(req, res) {
 // Post new Company on the db
 server.post('/api/companies', function(req, res) {
   var company = new Company({
-    name: req.body.name
+    _id: req.body._id
   });
 
   company.save(function(err) {
@@ -91,7 +106,7 @@ server.post('/api/employees', function(req, res) {
 
   //console.warn(req);
   var employee = new Employee({
-    name: req.body.name,
+    _id: req.body._id,
     company: req.body.company
   });
 
@@ -108,6 +123,7 @@ server.post('/api/tests', function(req, res) {
     name: req.body.name,
     employee: req.body.employee,
     date: req.body.date,
+    company: req.body.company,
     pass: req.body.pass
   });
 
