@@ -43,6 +43,8 @@
 </div>
 
 <div id="addCompanyForm">
+
+  <h3>Add Companies</h3>
     <form class="navbar-form">
       <input type="text" ng-model="newCompany.name" class ="form-control" placeholder="Company" name="companyName" required></input>
       <input type="submit" class="btn btn-success" ng-click="addCompany()" value= "Add"></input>
@@ -51,17 +53,19 @@
 
 </div id="showCompanies">
   <h3>Companies</h3>
-  <div ng-repeat="company in companies track by $index">
+  <div ng-repeat="company in companies">
     <span class="glyphicon glyphicon-minus"></span>{{company.name}}
   </div>
 </div>
 
 
 <div id="addEmployee">
+
+  <h3>Add Employees</h3>
     <form class="navbar-form">
       <select ng-model="newEmployee.company" class ="form-control" name="companiesList" required>
           <option value="" selected disabled>Choose Company</option>
-          <option ng-repeat="company in companies track by $index" value="{{company.name}}">{{company.name}}</option>
+          <option ng-repeat="company in companies" value="{{company.name}}">{{company.name}}</option>
       </select>
       <input type="text" ng-model="newEmployee.name" class ="form-control" placeholder="Employee Name" name="employeeName" required></input>
       <input type="submit" class="btn btn-success" ng-click="addEmployee()" value= "Add"></input>
@@ -70,9 +74,31 @@
 
 </div id="showEmployees">
   <h3>Employees</h3>
-  <div ng-repeat="employee in employees track by $index">
+  <select class ="form-control" ng-model="companiesFilter" required>
+        <option value="" selected>All Companies</option>
+        <option ng-repeat="company in companies" value="{{company.name}}">{{company.name}}</option>
+    </select>
+  <div ng-repeat="employee in employees | filter:{company:companiesFilter}">
     <span class="glyphicon glyphicon-minus"></span>{{employee.name}}, {{employee.company}}
   </div>
+</div>
+
+<div id="addTest">
+  <h3>Add Tests</h3>
+  <form class="navbar-form">
+    <select class ="form-control" ng-model="testCompany">
+        <option value="" selected>Choose Company</option>
+        <option ng-repeat="company in companies track by $index" value="{{company.name}}">{{company.name}}</option>
+    </select>
+    <select class ="form-control" ng-model="newTest.employee" required>
+        <option value="" selected disable>Choose Employee</option>
+        <option ng-repeat="employee in employees | filter:{company:testCompany}" value="{{employee.name}}">{{employee.name}}</option>
+    </select>
+    <input type="text" ng-model="newTest.name" class ="form-control" placeholder="Test Name" required></input>
+    <input type="date" ng-model="newTest.date" class ="form-control" required></input>
+    <div class ="form-control"><input type="checkbox" ng-model="newTest.pass" unchecked> Test Passed</input></div>
+    <input type="submit" class="btn btn-success" ng-click="addTest()" value= "Add"></input>
+  </form>
 </div>
 
 <!-- comment out the base page

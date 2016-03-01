@@ -35,6 +35,13 @@ meanApp.controller('mainCtrl', function($scope, $http, misc) {
     company: null
   };
 
+  $scope.newTest = {
+    employee: null,
+    name: null,
+    date: null,
+    pass: false
+  };
+
 
   // Populate the applicationa with all companies
   misc.getAllCompanies(function(response) {
@@ -46,6 +53,10 @@ meanApp.controller('mainCtrl', function($scope, $http, misc) {
   misc.getAllEmployees(function(response) {
     $scope.employees = response;
     $scope.$apply();
+  });
+
+  misc.getAllTests(function(response) {
+    $scope.tests = response;
   });
 
   // Add new contact to database
@@ -76,6 +87,26 @@ meanApp.controller('mainCtrl', function($scope, $http, misc) {
       $scope.employees.push($scope.newEmployee);
       $scope.newEmployee = {};
     }
+
+  }
+
+  $scope.addTest = function() {
+    console.log("test add in");
+    console.log($scope.newTest.employee);
+    var formFields = [];
+    for(key in $scope.newTest) {
+      formFields.push($scope.newTest[key]);
+      console.log(key);
+      console.log($scope.newTest[key]);
+    }   
+
+    if (misc.isValid(formFields)) {
+      console.log("valid");
+      $.post('/api/tests', $scope.newTest);
+      $scope.tests.push($scope.newTest);
+      $scope.newTest = {};
+    }
+    console.log("test add out");
 
   }
 
@@ -158,10 +189,17 @@ meanApp.factory('misc', function($http) {
         callback(response);
       });
     },
+    getAllTests: function(callback) {
+      $.get('/api/tests').success(function(response) {
+        callback(response);
+      });
+    },
     isValid: function(formFields) {
       for (i = 0; i < formFields.length; i++) {
         var arg = formFields[i];
-        if (arg == null || arg == undefined || arg == '') {
+        if (arg === null || arg === undefined || arg === '') {
+          console.log(arg);
+          console.log(i);
           return false;
         }
       }

@@ -24,9 +24,12 @@ var express    = require('express'),
 */
 
 mongoose.connect("127.0.0.1:27017/driverchecktest");
-var schema = new mongoose.Schema({name:String});
-var Company = mongoose.model('companies',schema);
-var Employee = mongoose.model('employees',schema);
+var CompSchema = new mongoose.Schema({name:String}),
+    Company = mongoose.model('companies',CompSchema),
+    EmpSchema = new mongoose.Schema({name:String, company:String}),
+    Employee = mongoose.model('employees',EmpSchema);
+    TestSchema = new mongoose.Schema({employee:String, name:String, date:Date, pass:Boolean}),
+    Test = mongoose.model('tests',TestSchema);
 
 
 var server = express();
@@ -45,27 +48,36 @@ console.log("Listening on port " + config.port);
 */
 
 server.get('/api/companies', function(req, res) {
-  console.warn("Im trying to get the companies");
+  //console.warn("Im trying to get the companies");
   Company.find(function(err, companies) {
     if (err) res.send(err);
-    console.warn(companies);
+    //console.warn(companies);
     res.json(companies);
   });
 });
 
 server.get('/api/employees', function(req, res) {
-  console.warn("Im trying to get the employees");
+  //console.warn("Im trying to get the employees");
   Employee.find(function(err, employees) {
     if (err) res.send(err);
-    console.warn(employees);
+    //console.warn(employees);
     res.json(employees);
+  });
+});
+
+server.get('/api/tests', function(req, res) {
+  //console.warn("Im trying to get the tests");
+  Test.find(function(err, tests) {
+    if (err) res.send(err);
+    //console.warn(tests);
+    res.json(tests);
   });
 });
 
 // Post new Company on the db
 server.post('/api/companies', function(req, res) {
   var company = new Company({
-    name: req.body.name,
+    name: req.body.name
   });
 
   company.save(function(err) {
@@ -76,12 +88,30 @@ server.post('/api/companies', function(req, res) {
 
 // Post new employees on the db
 server.post('/api/employees', function(req, res) {
+
+  //console.warn(req);
   var employee = new Employee({
     name: req.body.name,
-    company: req.body.company,
+    company: req.body.company
   });
 
   employee.save(function(err) {
+    if (err) res.send(err);
+    res.send("Success");
+  })
+});
+
+server.post('/api/tests', function(req, res) {
+
+  console.warn("posting new test");
+  var test = new Test({
+    name: req.body.name,
+    employee: req.body.employee,
+    date: req.body.date,
+    pass: req.body.pass
+  });
+
+  test.save(function(err) {
     if (err) res.send(err);
     res.send("Success");
   })
