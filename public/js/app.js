@@ -36,6 +36,7 @@ meanApp.controller('mainCtrl', function($scope, $http, misc) {
   };
 
   $scope.newTest = {
+    _id:0,
     company: null,
     employee: null,
     name: null,
@@ -97,23 +98,46 @@ meanApp.controller('mainCtrl', function($scope, $http, misc) {
   }
 
   $scope.addTest = function() {
-    console.log("test add in");
-    console.log($scope.newTest.employee);
     var formFields = [];
     for(key in $scope.newTest) {
       formFields.push($scope.newTest[key]);
-      console.log(key);
-      console.log($scope.newTest[key]);
     }   
 
     if (misc.isValid(formFields)) {
-      console.log("valid");
-      $.post('/api/tests', $scope.newTest);
+      $scope.newTest=$.post('/api/tests', $scope.newTest);
       $scope.tests.push($scope.newTest);
-      $scope.newTest = {pass: false};
+      $scope.newTest = {_id:0, pass: false};
     }
-    console.log("test add out");
 
+  }
+
+
+  $scope.removeCompany = function($index) {
+    var companyName=$scope.companies[$index]._id;
+    if (confirm("Are you sure you want to delete this company \n"+companyName)){
+
+      $http.delete('/api/company/' + companyName);
+      $scope.companies.splice($index, 1);
+    }
+  }
+
+  $scope.removeEmployee = function($index) {
+    var emloyeeName=$scope.employees[$index]._id;
+    if (confirm("Are you sure you want to delete this employee \n"+emloyeeName)){
+
+      $http.delete('/api/employee/' + emloyeeName);
+      $scope.employees.splice($index, 1);
+    }
+  }
+
+  $scope.removeTest = function($index) {
+    var test=$scope.tests[$index],
+        testID=test._id;
+    if (confirm("Are you sure you want to delete this test \n"+test.company+"\n"+test.employee+"\n"+test.name)){
+
+      $http.delete('/api/test/' + testID);
+      $scope.tests.splice($index, 1);
+    }
   }
 
 

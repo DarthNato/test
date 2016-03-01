@@ -127,9 +127,33 @@ server.post('/api/tests', function(req, res) {
     pass: req.body.pass
   });
 
-  test.save(function(err) {
+  test.save(function(err, isertedTest) {
     if (err) res.send(err);
-    res.send("Success");
+    res.json(isertedTest);
+  })
+});
+
+server.delete('/api/company/:id', function(req, res) {
+
+  Company.findByIdAndRemove(req.params.id, null, function(err, removed) {
+      if (err) res.send(err);
+      res.sendStatus(200);
+  })
+});
+
+server.delete('/api/employee/:id', function(req, res) {
+
+  Employee.findByIdAndRemove(req.params.id, null, function(err, removed) {
+      if (err) res.send(err);
+      res.sendStatus(200);
+  })
+});
+
+server.delete('/api/test/:id', function(req, res) {
+
+  Test.findByIdAndRemove(req.params.id, null, function(err, removed) {
+      if (err) res.send(err);
+      res.sendStatus(200);
   })
 });
 
