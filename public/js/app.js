@@ -91,13 +91,12 @@ meanApp.controller('mainCtrl', function($scope, $http, misc) {
     }   
 
     if (misc.isValid(formFields)) {
-      $.post('/api/'+elementType, newElement).success(function(insertedElement){
+      $.post('/api/new/'+elementType, newElement).success(function(insertedElement){
         collection.push(insertedElement);
+        for(key in newElement) newElement[key]=null;
         $scope.$apply();
       });
-      $newElement = {};
     }
-
   }
 
   $scope.removeElement = function($index,elementType) {
@@ -121,11 +120,69 @@ meanApp.controller('mainCtrl', function($scope, $http, misc) {
     }
 
     if (confirm(message)){
-      $http.delete('/api/'+elementType+ '/'+ scopeCollection[$index]._id);
+    $http.delete('/api/'+elementType+ '/'+ scopeCollection[$index]._id);
       scopeCollection.splice($index, 1);
     }
   }
 
+  // update element to database
+  $scope.edit = function($index, elementType) {
+
+    switch(elementType){
+      case "company":
+        $scope.oldCompany=$scope.companies[$index];
+        break;
+      case "employee":
+        $scope.oldEmployee=$scope.employees[$index];
+        break;
+      case "test":
+        $scope.oldTest=$scope.tests[$index];
+        break;
+      default: return;
+    }
+  }
+
+  // update element to database
+  $scope.updateElement = function(elementType) {
+    var newElement,
+        oldElement;
+    switch(elementType){
+      case "company":
+        newElement=$scope.updateCompany;
+        oldElement=$scope.oldCompany;
+        break;
+      case "employee":
+        newElement=$scope.updateEmployee;
+        oldElement=$scope.oldElement;
+        break;
+      case "test":
+        newElement=$scope.updateTest;
+        oldElement=$scope.oldElement;
+        break;
+      default: return;
+    }
+
+    var formFields = [];
+    for(key in oldElement) {
+      newElement[key]=newElement[key] || oldElement[key];
+      formFields.push(newElement[key]);
+    }   
+
+    if (misc.isValid(formFields)) {
+    console.warn(oldElement);
+    console.warn(newElement);
+    $.post('/api/update/'+elementType+"/"+newElement._id, newElement).success(function(res){  
+        if (res.err) console.warn(res);
+        else {
+          for (key in oldElement){ 
+            oldElement[key]=newElement[key];
+            newElement[key]=null;
+          }
+          $scope.$apply();
+        }
+      });
+    }
+  }
 
 //Not complete
    $scope.login = function() {

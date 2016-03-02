@@ -54,11 +54,20 @@
 </div id="showCompanies">
   <h3>Companies</h3>
   <div ng-repeat="company in companies">
-    {{company.name}}<button class="btn btn-info" ng-click="editCompany($index)"><span class="glyphicon glyphicon-pencil"></span></button>
+    {{company.name}}<button class="btn btn-info" ng-click="edit($index,'company')"><span class="glyphicon glyphicon-pencil"></span></button>
                    <button class="btn btn-danger" ng-click="removeElement($index,'company')"><span class="glyphicon glyphicon-remove"></span></button>
   </div>
 </div>
 
+<div id="updateCompany">
+
+  <h3>Update Company</h3>
+    <form class="navbar-form">
+      {{oldCompany.name}}
+      <input type="text" ng-model="updateCompany.name" class ="form-control" placeholder="New Name" name="companyName" required></input>
+      <input type="submit" class="btn btn-info" ng-click="updateElement('company')" value= "Update"></input>
+    </form>
+</div>
 
 <div id="addEmployee">
 

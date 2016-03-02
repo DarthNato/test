@@ -62,6 +62,28 @@ console.log("Listening on port " + config.port);
 -----------------------------------------------------------------------------------
 */
 
+server.get('/api/:type', function(req, res) {
+  var collection;
+  switch (req.params.type){
+    case 'companies':
+      collection= Company;
+    break;
+    case 'employees':
+      collection=Employee; 
+    break;
+    case 'tests':
+      collection=Test;
+    break;
+    default: return;
+  }
+  collection.find(function(err, collectionRetreived) {
+    if (err) res.send(err);
+    else{
+      res.json(collectionRetreived);
+    }
+  });
+});
+/*
 server.get('/api/companies', function(req, res) {
   //console.warn("Im trying to get the companies");
   Company.find(function(err, companies) {
@@ -88,9 +110,9 @@ server.get('/api/tests', function(req, res) {
     res.json(tests);
   });
 });
-
+*/
 //Add element to the DB
-server.post('/api/:type', function(req, res) {
+server.post('/api/new/:type', function(req, res) {
   var element;
   switch (req.params.type){
     case 'company':
@@ -118,8 +140,10 @@ server.post('/api/:type', function(req, res) {
 
   element.save(function(err,addedElement) {
     if (err) res.send(err);
-    console.warn(addedElement);
-    res.json(addedElement);
+    else{
+      console.warn(addedElement);
+      res.json(addedElement);
+    }
   })
 });
 
@@ -135,13 +159,58 @@ server.delete('/api/:type/:id', function(req, res) {
     case 'test':
       collection=Test;
     break;
+    default: return;
   }
 
   collection.findByIdAndRemove(req.params.id, null, function(err, removed) {
       if (err) res.send(err);
-      res.sendStatus(200);
+      else{
+        res.sendStatus(200);
+      }
   })
 });
+
+server.post('/api/update/:type/:id', function(req, res) {
+  console.warn("I got here 1");
+  var collection,
+      element;
+  switch (req.params.type){
+    case 'company':
+      collection=Company;
+      element= {
+        name: req.body.name
+      };
+    break;
+    case 'employee':
+      collection=Employee;
+      element={
+        name: req.body.name,
+        company: req.body.company
+      };
+    break;
+    case 'test':
+      collection=Test;
+      element= {
+        name: req.body.name,
+        employee: req.body.employee,
+        date: req.body.date,
+        company: req.body.company,
+        pass: req.body.pass
+      };
+    break;
+    default: return;
+  }
+  console.warn(element);
+
+  collection.update({_id:req.params.id}, element, function(err, updatedElement) {
+      if (err) res.send(err);
+      else{
+        res.json(updatedElement);
+        console.warn("I got here 3");
+      }
+  })
+});
+
 
 /*
 -----------------------------------------------------------------------------------
