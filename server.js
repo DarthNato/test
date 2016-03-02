@@ -25,11 +25,11 @@ var express    = require('express'),
 
 mongoose.connect("127.0.0.1:27017/driverchecktest");
 var CompSchema = new mongoose.Schema({
-      _id:String
+      name:String
     }),
     Company = mongoose.model('companies',CompSchema),
     EmpSchema = new mongoose.Schema({
-      _id:String,
+      name:String,
       company:String
     }),
     Employee = mongoose.model('employees',EmpSchema);
@@ -42,7 +42,7 @@ var CompSchema = new mongoose.Schema({
     }),
     Test = mongoose.model('tests',TestSchema),
     TestCatalogSchema  = new mongoose.Schema({
-      _id:String
+      name:String
     }),
     TestCatalog = mongoose.model('testCatalog',TestCatalogSchema);
 
@@ -89,115 +89,60 @@ server.get('/api/tests', function(req, res) {
   });
 });
 
-// Post new Company on the db
-server.post('/api/companies', function(req, res) {
-  var company = new Company({
-    _id: req.body._id
-  });
+//Add element to the DB
+server.post('/api/:type', function(req, res) {
+  var element;
+  switch (req.params.type){
+    case 'company':
+      element= new Company({
+        name: req.body.name
+      });
+    break;
+    case 'employee':
+      element=new Employee({
+        name: req.body.name,
+        company: req.body.company
+      });
+    break;
+    case 'test':
+      element= new Test({
+        name: req.body.name,
+        employee: req.body.employee,
+        date: req.body.date,
+        company: req.body.company,
+        pass: req.body.pass
+      });
+    break;
+    default: return;
+  }
 
-  company.save(function(err) {
+  element.save(function(err,addedElement) {
     if (err) res.send(err);
-    res.send("Success");
+    console.warn(addedElement);
+    res.json(addedElement);
   })
 });
 
-// Post new employees on the db
-server.post('/api/employees', function(req, res) {
+server.delete('/api/:type/:id', function(req, res) {
+  var collection;
+  switch (req.params.type){
+    case 'company':
+      collection=Company;
+    break;
+    case 'employee':
+      collection=Employee;
+    break;
+    case 'test':
+      collection=Test;
+    break;
+  }
 
-  //console.warn(req);
-  var employee = new Employee({
-    _id: req.body._id,
-    company: req.body.company
-  });
-
-  employee.save(function(err) {
-    if (err) res.send(err);
-    res.send("Success");
-  })
-});
-
-server.post('/api/tests', function(req, res) {
-
-  console.warn("posting new test");
-  var test = new Test({
-    name: req.body.name,
-    employee: req.body.employee,
-    date: req.body.date,
-    company: req.body.company,
-    pass: req.body.pass
-  });
-
-  test.save(function(err, isertedTest) {
-    if (err) res.send(err);
-    res.json(isertedTest);
-  })
-});
-
-server.delete('/api/company/:id', function(req, res) {
-
-  Company.findByIdAndRemove(req.params.id, null, function(err, removed) {
+  collection.findByIdAndRemove(req.params.id, null, function(err, removed) {
       if (err) res.send(err);
       res.sendStatus(200);
   })
 });
 
-server.delete('/api/employee/:id', function(req, res) {
-
-  Employee.findByIdAndRemove(req.params.id, null, function(err, removed) {
-      if (err) res.send(err);
-      res.sendStatus(200);
-  })
-});
-
-server.delete('/api/test/:id', function(req, res) {
-
-  Test.findByIdAndRemove(req.params.id, null, function(err, removed) {
-      if (err) res.send(err);
-      res.sendStatus(200);
-  })
-});
-
-/*
-// Get all contacts
-server.get('/api/contacts', function(req, res) {
-  Contact.find(function(err, contacts) {
-    if (err) res.send(err);
-    res.json(contacts);
-  });
-});
-
-
-
-// Post new contact
-server.post('/api/contacts', function(req, res) {
-  var contact = new Contact({
-    firstname: req.body.firstname,
-    lastname: req.body.lastname,
-    email: req.body.email
-  });
-
-  contact.save(function(err) {
-    if (err) res.send(err);
-    res.send("Success");
-  })
-});
-
-//Verify user
-server.post('/api/login', function(req, res) {
-  console.warn("login");
-  res.json("false");
-});
-
-// Delete contact
-server.delete('/api/contacts/:id', function(req, res) {
-
-  Contact.findByIdAndRemove(req.params.id, null, function(err, removed) {
-    if (err) res.send(err);
-    res.sendStatus(200);
-  });
-
-})
-*/
 /*
 -----------------------------------------------------------------------------------
 |
