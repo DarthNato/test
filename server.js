@@ -83,34 +83,7 @@ server.get('/api/:type', function(req, res) {
     }
   });
 });
-/*
-server.get('/api/companies', function(req, res) {
-  //console.warn("Im trying to get the companies");
-  Company.find(function(err, companies) {
-    if (err) res.send(err);
-    //console.warn(companies);
-    res.json(companies);
-  });
-});
 
-server.get('/api/employees', function(req, res) {
-  //console.warn("Im trying to get the employees");
-  Employee.find(function(err, employees) {
-    if (err) res.send(err);
-    //console.warn(employees);
-    res.json(employees);
-  });
-});
-
-server.get('/api/tests', function(req, res) {
-  //console.warn("Im trying to get the tests");
-  Test.find(function(err, tests) {
-    if (err) res.send(err);
-    //console.warn(tests);
-    res.json(tests);
-  });
-});
-*/
 //Add element to the DB
 server.post('/api/new/:type', function(req, res) {
   var element;

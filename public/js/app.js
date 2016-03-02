@@ -18,34 +18,36 @@ var meanApp = angular.module('meanApp', ['ngResource']);
 
 meanApp.controller('mainCtrl', function($scope, $http, misc) {
 
-/*
-  // user model
-  $scope.user = {
-    user: null,
-    pass: null
-  };
-*/
-    // user Company
-  $scope.newCompany = {
-    name: null
-  };
+$scope.updateCompany = {
+  name: null
+};
+$scope.newCompany = {
+  name: null
+};
 
-  $scope.newEmployee = {
-    name: null,
-    company: null
-  };
+$scope.updateEmployee = {
+  name: null,
+  company: null
+};
+$scope.newEmployee = {
+  name: null,
+  company: null
+};
 
-  $scope.newTest = {
-    company: null,
-    employee: null,
-    name: null,
-    date: null,
-    pass: false
-  };
-
-  $scope.newTestInCatalog = {
-    name: null
-  };
+$scope.updateTest = {
+  company: null,
+  employee: null,
+  name: null,
+  date: null,
+  pass: false,
+};
+$scope.newTest = {
+  company: null,
+  employee: null,
+  name: null,
+  date: null,
+  pass: false,
+};
 
 
   // Populate the applicationa with all companies
@@ -67,6 +69,7 @@ meanApp.controller('mainCtrl', function($scope, $http, misc) {
 
   // Add new element to database
   $scope.addElement = function(elementType) {
+    console.warn("adding a "+elementType);
     var newElement,
         collection;
     switch(elementType){
@@ -97,6 +100,10 @@ meanApp.controller('mainCtrl', function($scope, $http, misc) {
         $scope.$apply();
       });
     }
+
+    //hack... we need to return the value of the checkbox to false,
+    //so we dont store empty data when unchecked 
+    if (elementType=="test") newElement.pass=false;
   }
 
   $scope.removeElement = function($index,elementType) {
@@ -128,15 +135,20 @@ meanApp.controller('mainCtrl', function($scope, $http, misc) {
   // update element to database
   $scope.edit = function($index, elementType) {
 
+    console.warn("editing a "+elementType);
     switch(elementType){
       case "company":
         $scope.oldCompany=$scope.companies[$index];
+        console.warn($scope.updateCompany);
+        for (key in $scope.updateCompany) $scope.updateCompany[key]= $scope.oldCompany[key];
         break;
       case "employee":
         $scope.oldEmployee=$scope.employees[$index];
+        for (key in $scope.updateEmployee) $scope.updateEmployee[key]= $scope.oldEmployee[key];
         break;
       case "test":
         $scope.oldTest=$scope.tests[$index];
+        for (key in $scope.updateTest) $scope.updateTest[key]= $scope.oldTest[key];
         break;
       default: return;
     }
@@ -153,11 +165,11 @@ meanApp.controller('mainCtrl', function($scope, $http, misc) {
         break;
       case "employee":
         newElement=$scope.updateEmployee;
-        oldElement=$scope.oldElement;
+        oldElement=$scope.oldEmployee;
         break;
       case "test":
         newElement=$scope.updateTest;
-        oldElement=$scope.oldElement;
+        oldElement=$scope.oldTest;
         break;
       default: return;
     }

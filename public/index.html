@@ -90,15 +90,28 @@
     </select>
   <div ng-repeat="employee in employees | filter:{company:companiesFilter}">
     {{employee.name}}, {{employee.company}}
-    <button class="btn btn-info" ng-click="editEmploee($index)"><span class="glyphicon glyphicon-pencil"></span></button>
+    <button class="btn btn-info" ng-click="edit($index,'employee')"><span class="glyphicon glyphicon-pencil"></span></button>
     <button class="btn btn-danger" ng-click="removeElement($index,'employee')"><span class="glyphicon glyphicon-remove"></span></button>
   </div>
+</div>
+
+<div id="updateEmployee">
+  <h3>Update Employees</h3>
+    <form class="navbar-form">
+      {{oldEmployee.name}},{{oldEmployee.company}},
+      <select ng-model="updateEmployee.company" class ="form-control" name="companiesList">
+          <option value="" selected disabled>Choose New Company</option>
+          <option ng-repeat="company in companies" value="{{company.name}}">{{company.name}}</option>
+      </select>
+      <input type="text" ng-model="updateEmployee.name" class ="form-control" placeholder="New Employee Name" name="employeeName" ></input>
+      <input type="submit" class="btn btn-info" ng-click="updateElement('employee')" value= "Update"></input>
+    </form>
 </div>
 
 <div id="addTest">
   <h3>Add Tests</h3>
   <form class="navbar-form">
-    <select class ="form-control" ng-model="newTest.company">
+    <select class ="form-control" ng-model="newTest.company" required>
         <option value="" selected>Choose Company</option>
         <option ng-repeat="company in companies" value="{{company.name}}">{{company.name}}</option>
     </select>
@@ -125,9 +138,28 @@
     </select>
     <div ng-repeat="test in tests | filter:{employee:employeeTest, company:companiesFilterForTest}">
       {{test.company}},{{test.employee}},{{test.name}}, {{test.date}}, {{test.pass}}
-      <button class="btn btn-info" ng-click="editTest($index)"><span class="glyphicon glyphicon-pencil"></span></button>
+      <button class="btn btn-info" ng-click="edit($index,'test')"><span class="glyphicon glyphicon-pencil"></span></button>
       <button class="btn btn-danger" ng-click="removeElement($index,'test')"><span class="glyphicon glyphicon-remove"></span></button>
     </div>
+</div>
+
+<div id="updateTest">
+  <h3>Update Tests</h3>
+  <form class="navbar-form">
+    {{oldTest.company}},{{oldTest.employee}},{{oldTest.name}},{{oldTest.date}},{{oldTest.pass}}
+    <select class ="form-control" ng-model="updateTest.company">
+        <option value="" selected disable>Choose New Company</option>
+        <option ng-repeat="company in companies" value="{{company.name}}">{{company.name}}</option>
+    </select>
+    <select class ="form-control" ng-model="updateTest.employee">
+        <option value="" selected disable>Choose New Employee</option>
+        <option ng-repeat="employee in employees | filter:{company:updateTest.company}" value="{{employee.name}}">{{employee.name}}</option>
+    </select>
+    <input type="text" ng-model="updateTest.name" class ="form-control" placeholder="Test Name" required></input>
+    <input type="date" ng-model="updateTest.date" class ="form-control" required></input>
+    <div class ="form-control"><input type="checkbox" ng-model="updateTest.pass"> Test Passed</input></div>
+    <input type="submit" class="btn btn-info" ng-click="updateElement('test')" value= "Update"></input>
+  </form>
 </div>
 
 <!-- comment out the base page
