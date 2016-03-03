@@ -108,45 +108,45 @@ $scope.fullApp=false;
     if (elementType=="test") newElement.pass=false;
   }
 
-  $scope.removeElement = function($index,elementType) {
+  $scope.removeElement = function(element,elementType) {
     var message = "Are you sure you want to delete this "+elementType+"?\n",
         scopeCollection;
-
+    console.warn(element);
     switch(elementType){
       case "company":
         scopeCollection=$scope.companies;
-        message+=scopeCollection[$index].name;
+        message+=element.name;
         break;
       case "employee":
         scopeCollection=$scope.employees;
-        message+=scopeCollection[$index].name;
+        message+=element.name;
         break;
       case "test":
         scopeCollection=$scope.tests;
-        message+=scopeCollection[$index].company+"\n"+scopeCollection[$index].employee+"\n"+scopeCollection[$index].name;
+        message+=element.company+"\n"+element.employee+"\n"+element.name;
         break;
     }
 
     if (confirm(message)){
-    $http.delete('/api/'+elementType+ '/'+ scopeCollection[$index]._id);
-      scopeCollection.splice($index, 1);
+    $http.delete('/api/'+elementType+ '/'+ element._id);
+      scopeCollection.splice(scopeCollection.indexOf(element), 1);
     }
   }
 
   // update element to database
-  $scope.edit = function($index, elementType) {
+  $scope.edit = function(element, elementType) {
 
     switch(elementType){
       case "company":
-        $scope.oldCompany=$scope.companies[$index];
+        $scope.oldCompany=element;
         for (key in $scope.updateCompany) $scope.updateCompany[key]= $scope.oldCompany[key];
         break;
       case "employee":
-        $scope.oldEmployee=$scope.employees[$index];
+        $scope.oldEmployee=element;
         for (key in $scope.updateEmployee) $scope.updateEmployee[key]= $scope.oldEmployee[key];
         break;
       case "test":
-        $scope.oldTest=$scope.tests[$index];
+        $scope.oldTest=element;
         for (key in $scope.updateTest) $scope.updateTest[key]= $scope.oldTest[key];
         break;
       default: return;
@@ -199,6 +199,7 @@ $scope.fullApp=false;
       if (res){
         $scope.loginScreen=false;
         $scope.fullApp=true;
+        $scope.$apply();
       }
       else alert("Wrong Password!!!");
     });
