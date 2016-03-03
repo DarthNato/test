@@ -72,7 +72,6 @@ $scope.fullApp=false;
 
   // Add new element to database
   $scope.addElement = function(elementType) {
-    console.warn("adding a "+elementType);
     var newElement,
         collection;
     switch(elementType){
@@ -110,7 +109,6 @@ $scope.fullApp=false;
   }
 
   $scope.removeElement = function($index,elementType) {
-    console.warn("in new remove");
     var message = "Are you sure you want to delete this "+elementType+"?\n",
         scopeCollection;
 
@@ -138,11 +136,9 @@ $scope.fullApp=false;
   // update element to database
   $scope.edit = function($index, elementType) {
 
-    console.warn("editing a "+elementType);
     switch(elementType){
       case "company":
         $scope.oldCompany=$scope.companies[$index];
-        console.warn($scope.updateCompany);
         for (key in $scope.updateCompany) $scope.updateCompany[key]= $scope.oldCompany[key];
         break;
       case "employee":
@@ -199,7 +195,6 @@ $scope.fullApp=false;
 
 //Super hack!!! all the DB info is already on the browser memory, but is simply not shown xD
    $scope.login = function() {
-    console.warn("login");
     $.post('/api/login', $scope.loginInfo).success(function(res){
       if (res){
         $scope.loginScreen=false;

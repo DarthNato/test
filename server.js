@@ -23,7 +23,7 @@ var express    = require('express'),
 -----------------------------------------------------------------------------------
 */
 
-mongoose.connect("127.0.0.1:27017/driverchecktest");
+mongoose.connect("127.0.0.1:27017/testappdb");
 var CompSchema = new mongoose.Schema({
       name:String
     }),
@@ -114,7 +114,6 @@ server.post('/api/new/:type', function(req, res) {
   element.save(function(err,addedElement) {
     if (err) res.send(err);
     else{
-      console.warn(addedElement);
       res.json(addedElement);
     }
   })
@@ -144,7 +143,6 @@ server.delete('/api/:type/:id', function(req, res) {
 });
 
 server.post('/api/update/:type/:id', function(req, res) {
-  console.warn("I got here 1");
   var collection,
       element;
   switch (req.params.type){
@@ -173,13 +171,11 @@ server.post('/api/update/:type/:id', function(req, res) {
     break;
     default: return;
   }
-  console.warn(element);
 
   collection.update({_id:req.params.id}, element, function(err, updatedElement) {
       if (err) res.send(err);
       else{
         res.json(updatedElement);
-        console.warn("I got here 3");
       }
   })
 });
