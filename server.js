@@ -184,6 +184,12 @@ server.post('/api/update/:type/:id', function(req, res) {
   })
 });
 
+server.post('/api/login', function(req, res) {
+    if (req.body.user=="qwerty" && req.body.pass=="12345")
+      res.send(true);
+    else res.send(false);
+});
+
 
 /*
 -----------------------------------------------------------------------------------

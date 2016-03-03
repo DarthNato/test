@@ -7,198 +7,231 @@
   <link href='http://fonts.googleapis.com/css?family=Lato:400,900' rel='stylesheet' type='text/css'>
   <link rel="stylesheet" href="css/styles.css">
 
-    <!-- Latest compiled and minified CSS -->
+  <!-- Latest compiled and minified CSS -->
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
   <!-- Optional theme -->
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
 
-  <title>MEAN-CRUD Application</title>
+  <title>Driver Check Test</title>
 </head>
 <body ng-controller="mainCtrl">
 
-    <div id="login">
-      
-      <form class="form-signin">
-        <div class="modal-header">
+  <div ng-show="loginScreen" class="ng-show">
+
+    <form class="form-signin">
+      <div class="modal-header">
         <h2 class="form-signin-heading">Please sign in</h2>
-        </div>
-        <div class="modal-body">
-        <input type="user" name="user" class="form-control" placeholder="User" required autofocus>
-        <input type="password" name="pass" class="form-control" placeholder="Password" required>
-        </div>
-        <div class="modal-footer">
+      </div>
+      <div class="modal-body">
+        <input type="user" ng-model="loginInfo.user" class="form-control" placeholder="User" required autofocus>
+        <input type="password" ng-model="loginInfo.pass" class="form-control" placeholder="Password" required>
+      </div>
+      <div class="modal-footer">
         <button ng-click="login()" class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+      </div>
+    </form>
+  </div> <!-- /login -->
+
+<div ng-show="fullApp" class="ng-hide">
+  <ul class="nav nav-pills">
+    <li ng-click="view('company')"><a href="#">Companies</a></li>
+    <li ng-click="view('employee')"><a href="#">Employees</a></li>
+    <li ng-click="view('test')"><a href="#">Test</a></li>
+  </ul> 
+
+  <div id="showCompanies" ng-show="companyView" class="ng-hide">
+    <h3>Companies</h3>
+    <div ng-repeat="company in companies">
+      {{company.name}}<button data-toggle="modal" data-target="#updateCompany" class="btn btn-info" ng-click="edit($index,'company')"><span class="glyphicon glyphicon-pencil"></span></button>
+      <button class="btn btn-danger" ng-click="removeElement($index,'company')"><span class="glyphicon glyphicon-remove"></span></button>
+    </div>
+    <div class="floatingElement">
+      <button type="button" class="btn btn-success btn-lg" data-toggle="modal" data-target="#addCompany">
+        <span class="glyphicon glyphicon-plus"></span> Add</button>
+      </div>
+    </div>
+
+    <div class="modal fade" id="addCompany" >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-body">    
+            <form class="navbar-form">
+              <h4 class="modal-title">Add Companies</h4>
+              <input type="text" ng-model="newCompany.name" class ="form-control" placeholder="Company" name="companyName" required></input>
+              <input type="submit" class="btn btn-success" data-dismiss="modal" ng-click="addElement('company')" value= "Add"></input>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+          </div>
         </div>
-      </form>
-      
-    </div> <!-- /login -->
-
-<div class ="modal fade hide" id="wrongPass">
-        <div class="modal-header">
-        <h2>Wrong Password</h2>
-        </div>
-        <div class="modal-footer">
-        <button ng-click="" class="btn btn-lg btn-primary btn-block">Try Again</button>
-        </div>
-</div>
-
-<div id="addCompanyForm">
-
-  <h3>Add Companies</h3>
-    <form class="navbar-form">
-      <input type="text" ng-model="newCompany.name" class ="form-control" placeholder="Company" name="companyName" required></input>
-      <input type="submit" class="btn btn-success" ng-click="addElement('company')" value= "Add"></input>
-    </form>
-</div>
-
-</div id="showCompanies">
-  <h3>Companies</h3>
-  <div ng-repeat="company in companies">
-    {{company.name}}<button class="btn btn-info" ng-click="edit($index,'company')"><span class="glyphicon glyphicon-pencil"></span></button>
-                   <button class="btn btn-danger" ng-click="removeElement($index,'company')"><span class="glyphicon glyphicon-remove"></span></button>
-  </div>
-</div>
-
-<div id="updateCompany">
-
-  <h3>Update Company</h3>
-    <form class="navbar-form">
-      {{oldCompany.name}}
-      <input type="text" ng-model="updateCompany.name" class ="form-control" placeholder="New Name" name="companyName" required></input>
-      <input type="submit" class="btn btn-info" ng-click="updateElement('company')" value= "Update"></input>
-    </form>
-</div>
-
-<div id="addEmployee">
-
-  <h3>Add Employees</h3>
-    <form class="navbar-form">
-      <select ng-model="newEmployee.company" class ="form-control" name="companiesList" required>
-          <option value="" selected disabled>Choose Company</option>
-          <option ng-repeat="company in companies" value="{{company.name}}">{{company.name}}</option>
-      </select>
-      <input type="text" ng-model="newEmployee.name" class ="form-control" placeholder="Employee Name" name="employeeName" required></input>
-      <input type="submit" class="btn btn-success" ng-click="addElement('employee')" value= "Add"></input>
-    </form>
-</div>
-
-</div id="showEmployees">
-  <h3>Employees</h3>
-  <select class ="form-control" ng-model="companiesFilter" required>
-        <option value="" selected>All Companies</option>
-        <option ng-repeat="company in companies" value="{{company.name}}">{{company.name}}</option>
-    </select>
-  <div ng-repeat="employee in employees | filter:{company:companiesFilter}">
-    {{employee.name}}, {{employee.company}}
-    <button class="btn btn-info" ng-click="edit($index,'employee')"><span class="glyphicon glyphicon-pencil"></span></button>
-    <button class="btn btn-danger" ng-click="removeElement($index,'employee')"><span class="glyphicon glyphicon-remove"></span></button>
-  </div>
-</div>
-
-<div id="updateEmployee">
-  <h3>Update Employees</h3>
-    <form class="navbar-form">
-      {{oldEmployee.name}},{{oldEmployee.company}},
-      <select ng-model="updateEmployee.company" class ="form-control" name="companiesList">
-          <option value="" selected disabled>Choose New Company</option>
-          <option ng-repeat="company in companies" value="{{company.name}}">{{company.name}}</option>
-      </select>
-      <input type="text" ng-model="updateEmployee.name" class ="form-control" placeholder="New Employee Name" name="employeeName" ></input>
-      <input type="submit" class="btn btn-info" ng-click="updateElement('employee')" value= "Update"></input>
-    </form>
-</div>
-
-<div id="addTest">
-  <h3>Add Tests</h3>
-  <form class="navbar-form">
-    <select class ="form-control" ng-model="newTest.company" required>
-        <option value="" selected>Choose Company</option>
-        <option ng-repeat="company in companies" value="{{company.name}}">{{company.name}}</option>
-    </select>
-    <select class ="form-control" ng-model="newTest.employee" required>
-        <option value="" selected disable>Choose Employee</option>
-        <option ng-repeat="employee in employees | filter:{company:newTest.company}" value="{{employee.name}}">{{employee.name}}</option>
-    </select>
-    <input type="text" ng-model="newTest.name" class ="form-control" placeholder="Test Name" required></input>
-    <input type="date" ng-model="newTest.date" class ="form-control" required></input>
-    <div class ="form-control"><input type="checkbox" ng-model="newTest.pass"> Test Passed</input></div>
-    <input type="submit" class="btn btn-success" ng-click="addElement('test')" value= "Add"></input>
-  </form>
-</div>
-
-<div id="showTests">
-    <h3>Tests</h3>  
-    <select class ="form-control" ng-model="companiesFilterForTest" required>
-        <option value="" selected>All Companies</option>
-        <option ng-repeat="company in companies" value="{{company.name}}">{{company.name}}</option>
-    </select>
-    <select class ="form-control" ng-model="employeeTest" required>
-        <option value="" selected>All Employees</option>
-        <option ng-repeat="employee in employees | filter:{company:companiesFilterForTest}" value="{{employee.name}}">{{employee.name}}</option>
-    </select>
-    <div ng-repeat="test in tests | filter:{employee:employeeTest, company:companiesFilterForTest}">
-      {{test.company}},{{test.employee}},{{test.name}}, {{test.date}}, {{test.pass}}
-      <button class="btn btn-info" ng-click="edit($index,'test')"><span class="glyphicon glyphicon-pencil"></span></button>
-      <button class="btn btn-danger" ng-click="removeElement($index,'test')"><span class="glyphicon glyphicon-remove"></span></button>
-    </div>
-</div>
-
-<div id="updateTest">
-  <h3>Update Tests</h3>
-  <form class="navbar-form">
-    {{oldTest.company}},{{oldTest.employee}},{{oldTest.name}},{{oldTest.date}},{{oldTest.pass}}
-    <select class ="form-control" ng-model="updateTest.company">
-        <option value="" selected disable>Choose New Company</option>
-        <option ng-repeat="company in companies" value="{{company.name}}">{{company.name}}</option>
-    </select>
-    <select class ="form-control" ng-model="updateTest.employee">
-        <option value="" selected disable>Choose New Employee</option>
-        <option ng-repeat="employee in employees | filter:{company:updateTest.company}" value="{{employee.name}}">{{employee.name}}</option>
-    </select>
-    <input type="text" ng-model="updateTest.name" class ="form-control" placeholder="Test Name" required></input>
-    <input type="date" ng-model="updateTest.date" class ="form-control" required></input>
-    <div class ="form-control"><input type="checkbox" ng-model="updateTest.pass"> Test Passed</input></div>
-    <input type="submit" class="btn btn-info" ng-click="updateElement('test')" value= "Update"></input>
-  </form>
-</div>
-
-<!-- comment out the base page
-  <header>
-    <div class="headline">
-      <h1>Never forget.</h1>
-      <p>Save your contacts with a single click.</p>
-    </div>
-  </header>
-
-  <form class="new-contact">
-    <div class="form-group">
-      <input ng-model="newContact.firstname" class="form-control" name="firstname" placeholder="Firstname" autocomplete="off">
-    </div>
-    <div class="form-group">
-      <input ng-model="newContact.lastname" class="form-control" name="lastname" placeholder="Lastname" autocomplete="off">
-    </div>
-    <div class="form-group">
-      <input ng-model="newContact.email" class="form-control" name="email" placeholder="Email" autocomplete="off">
-    </div>
-    <div class="form-group">
-      <div ng-click="addContact()" class="add-contact">Save your contact forever</div>
-    </div>
-  </form>
-
-  <div class="contacts">
-    <div ng-repeat="contact in contacts" class="col">
-      <div class="contact">
-        <div ng-click="deleteContact($index)" class="contact-delete">X</div>
-        <p><strong>{{ contact.lastname }}</strong>, {{ contact.firstname }}</p>
-        <p class="contact-email">{{ contact.email }}</p>
       </div>
     </div>
   </div>
--->
+
+
+  <div class="modal fade" id="updateCompany" >
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-body">    
+          <form class="navbar-form">
+            <h4 class="modal-title">Update Company</h4>
+            <form class="navbar-form">
+              {{oldCompany.name}}
+              <input type="text" ng-model="updateCompany.name" class ="form-control" placeholder="New Name" name="companyName" required></input>
+              <input type="submit" class="btn btn-info" data-dismiss="modal" ng-click="updateElement('company')" value= "Update"></input>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="modal fade" id="addEmployee">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-body"> 
+          <h4 class="modal-title">Add Employee</h4>   
+          <form class="navbar-form">
+            <select ng-model="newEmployee.company" class ="form-control" name="companiesList" required>
+              <option value="" selected disabled>Choose Company</option>
+              <option ng-repeat="company in companies" value="{{company.name}}">{{company.name}}</option>
+            </select>
+            <input type="text" ng-model="newEmployee.name" class ="form-control" placeholder="Employee Name" name="employeeName" required></input>
+            <input type="submit" class="btn btn-success" data-dismiss="modal" ng-click="addElement('employee')" value= "Add"></input>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <div id="showEmployees" ng-show="employeeView" class="ng-hide">
+    <h3>Employees</h3>
+    <select class ="form-control" ng-model="companiesFilter" required>
+      <option value="" selected>All Companies</option>
+      <option ng-repeat="company in companies" value="{{company.name}}">{{company.name}}</option>
+    </select>
+    <div ng-repeat="employee in employees | filter:{company:companiesFilter}">
+      {{employee.name}}, {{employee.company}}
+      <button class="btn btn-info" data-toggle="modal" data-target="#updateEmployee" ng-click="edit($index,'employee')"><span class="glyphicon glyphicon-pencil"></span></button>
+      <button class="btn btn-danger" ng-click="removeElement($index,'employee')"><span class="glyphicon glyphicon-remove"></span></button>
+    </div>
+    <div class="floatingElement">
+      <button type="button" class="btn btn-success btn-lg" data-toggle="modal" data-target="#addEmployee"><span class="glyphicon glyphicon-plus"></span> Add</button>
+    </div>
+  </div>
+
+  <div class="modal fade" id="updateEmployee" >
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-body">    
+          <h4 class="modal-title">Update Employees</h4>
+          <form class="navbar-form">
+            {{oldEmployee.name}},{{oldEmployee.company}},
+            <select ng-model="updateEmployee.company" class ="form-control" name="companiesList">
+              <option value="" selected disabled>Choose New Company</option>
+              <option ng-repeat="company in companies" value="{{company.name}}">{{company.name}}</option>
+            </select>
+            <input type="text" ng-model="updateEmployee.name" class ="form-control" placeholder="New Employee Name" name="employeeName" ></input>
+            <input type="submit" class="btn btn-info" ng-click="updateElement('employee')"  data-dismiss="modal" value= "Update"></input>
+          </form>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+          </div>
+        </div>
+      </div>
+    </div>s
+  </div>
+
+  <div class="modal fade" id="addTest" >
+    <div class="modal-content">
+      <div class="modal-body"> 
+        <h4 class="modal-title"><h3>Add Tests</h3>
+        <form class="navbar-form">
+          <select class ="form-control" ng-model="newTest.company" required>
+            <option value="" selected>Choose Company</option>
+            <option ng-repeat="company in companies" value="{{company.name}}">{{company.name}}</option>
+          </select>
+          <select class ="form-control" ng-model="newTest.employee" required>
+            <option value="" selected disable>Choose Employee</option>
+            <option ng-repeat="employee in employees | filter:{company:newTest.company}" value="{{employee.name}}">{{employee.name}}</option>
+          </select>
+          <input type="text" ng-model="newTest.name" class ="form-control" placeholder="Test Name" required></input>
+          <input type="date" ng-model="newTest.date" class ="form-control" required></input>
+          <div class ="form-control"><input type="checkbox" ng-model="newTest.pass"> Test Passed</input></div>
+          <input type="submit" class="btn btn-success" data-dismiss="modal" ng-click="addElement('test')" value= "Add"></input>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div id="showTests" ng-show="testView" class="ng-hide">
+    <h3>Tests</h3>  
+    <select class ="form-control" ng-model="companiesFilterForTest" required>
+      <option value="" selected>All Companies</option>
+      <option ng-repeat="company in companies" value="{{company.name}}">{{company.name}}</option>
+    </select>
+    <select class ="form-control" ng-model="employeeTest" required>
+      <option value="" selected>All Employees</option>
+      <option ng-repeat="employee in employees | filter:{company:companiesFilterForTest}" value="{{employee.name}}">{{employee.name}}</option>
+    </select>
+    <div ng-repeat="test in tests | filter:{employee:employeeTest, company:companiesFilterForTest}">
+      {{test.company}},{{test.employee}},{{test.name}}, {{test.date}}, {{test.pass}}
+      <button class="btn btn-info" data-toggle="modal" data-target="#updateTest" ng-click="edit($index,'test')"><span class="glyphicon glyphicon-pencil"></span></button>
+      <button class="btn btn-danger" ng-click="removeElement($index,'test')"><span class="glyphicon glyphicon-remove"></span></button>
+    </div>
+    <div class="floatingElement">
+      <button type="button" class="btn btn-success btn-lg" data-toggle="modal" data-target="#addTest"><span class="glyphicon glyphicon-plus"></span> Add</button>
+    </div>
+  </div>
+
+  <div class="modal fade" id="updateTest" >
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-body">    
+          <h4 class="modal-title">Update Tests</h4>
+          <form class="navbar-form">
+            {{oldTest.company}},{{oldTest.employee}},{{oldTest.name}},{{oldTest.date}},{{oldTest.pass}}
+            <select class ="form-control" ng-model="updateTest.company">
+              <option value="" selected disable>Choose New Company</option>
+              <option ng-repeat="company in companies" value="{{company.name}}">{{company.name}}</option>
+            </select>
+            <select class ="form-control" ng-model="updateTest.employee">
+              <option value="" selected disable>Choose New Employee</option>
+              <option ng-repeat="employee in employees | filter:{company:updateTest.company}" value="{{employee.name}}">{{employee.name}}</option>
+            </select>
+            <input type="text" ng-model="updateTest.name" class ="form-control" placeholder="Test Name" required></input>
+            <input type="date" ng-model="updateTest.date" class ="form-control" required></input>
+            <div class ="form-control"><input type="checkbox" ng-model="updateTest.pass"> Test Passed</input></div>
+            <input type="submit" class="btn btn-info" ng-click="updateElement('test')" data-dismiss="modal" value= "Update"></input>
+          </form>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+
   <!-- JavaScript -->
   <script src="https://code.jquery.com/jquery-1.12.1.min.js"></script>
   <script src="https://code.angularjs.org/1.5.0/angular.min.js"></script>
   <script src="https://code.angularjs.org/1.5.0/angular-resource.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
   <script src="js/app.js"></script>
 
 </body>

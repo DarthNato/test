@@ -49,6 +49,9 @@ $scope.newTest = {
   pass: false,
 };
 
+$scope.modalView="";
+$scope.loginScreen=true;
+$scope.fullApp=false;
 
   // Populate the applicationa with all companies
   misc.getAllCompanies(function(response) {
@@ -181,8 +184,6 @@ $scope.newTest = {
     }   
 
     if (misc.isValid(formFields)) {
-    console.warn(oldElement);
-    console.warn(newElement);
     $.post('/api/update/'+elementType+"/"+newElement._id, newElement).success(function(res){  
         if (res.err) console.warn(res);
         else {
@@ -196,17 +197,35 @@ $scope.newTest = {
     }
   }
 
-//Not complete
+//Super hack!!! all the DB info is already on the browser memory, but is simply not shown xD
    $scope.login = function() {
-    var formFields = [];
-    for(key in $scope.user) {
-      formFields.push($scope.user[key]);
-    }  
-    var temp = $.post('/api/login', $scope.user)
-    console.log(temp);
-    $scope.user = {};
+    console.warn("login");
+    $.post('/api/login', $scope.loginInfo).success(function(res){
+      if (res){
+        $scope.loginScreen=false;
+        $scope.fullApp=true;
+      }
+      else alert("Wrong Password!!!");
+    });
   }
-  //Not complete
+
+  $scope.view = function(screen) {
+    $scope.companyView=$scope.employeeView=$scope.testView=false;
+    switch (screen){
+      case 'company':
+      $scope.companyView=true;
+      $scope.modalView='#addCompany';
+      break;
+      case 'employee':
+      $scope.employeeView=true;
+      $scope.modalView='#addEmployee';
+      break;
+      case 'test':
+      $scope.testView=true;
+      $scope.modalView='#addTest';
+      break;
+    }
+  }
 
 });
 
